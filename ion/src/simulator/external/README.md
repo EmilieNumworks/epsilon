@@ -4,3 +4,5 @@ The sdl directory contains a snapshot of the SDL source code at revision
 Note that parts of SDL source code are also copied into the path
 ion/src/simulator/android/src/java because Gradle expects Java code to live
 there...
+
+The dlfcn repository contains dlfcn-win32 release 1.3.1
