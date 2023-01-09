@@ -1,0 +1,47 @@
+name: Artifacts
+on: push
+
+env:
+  MAKEFLAGS: -j2
+jobs:
+  windows:
+    runs-on: windows-latest
+    defaults:
+       run:
+         shell: msys2 {0}
+    steps:
+      - uses: msys2/setup-msys2@v2
+      - uses: actions/checkout@v2
+      - run: pacman -S --noconfirm mingw-w64-x86_64-gcc mingw-w64-x86_64-freetype mingw-w64-x86_64-pkg-config make mingw-w64-x86_64-python3 mingw-w64-x86_64-libjpeg-turbo mingw-w64-x86_64-libpng mingw-w64-x86_64-imagemagick mingw-w64-x86_64-librsvg mingw-w64-x86_64-inkscape mingw-w64-x86_64-python3-pip
+      - run: SETUPTOOLS_USE_DISTUTILS=stdlib pip3 install lz4 pypng stringcase
+      - run: make DEBUG=1 PLATFORM=simulator ION_SIMULATOR_FILES=1 epsilon.exe
+      - uses: actions/upload-artifact@v3
+        with:
+          name: epsilon-windows.exe
+          path: output/debug/simulator/windows/epsilon.exe
+      - uses: actions/upload-artifact@master
+        with:
+          name: epsilon-windows.a
+          path: output/debug/simulator/windows/libepsilon.a
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - run: sudo apt-get install build-essential imagemagick libfreetype6-dev libjpeg-dev libpng-dev pkg-config
+      - run: pip3 install lz4 pypng stringcase
+      - uses: actions/checkout@v2
+      - run: make PLATFORM=simulator DEBUG=1 ION_SIMULATOR_FILES=1 epsilon.bin
+      - uses: actions/upload-artifact@v3
+        with:
+          name: epsilon-linux.bin
+          path: output/debug/simulator/linux/epsilon.bin
+  macos:
+    runs-on: macOS-latest
+    steps:
+      - run: brew install numworks/tap/epsilon-sdk
+      - run: pip3 install lz4 pypng stringcase # TODO: should be part of brew formula
+      - uses: actions/checkout@v2
+      - run: make DEBUG=1 PLATFORM=simulator TARGET=macos ION_SIMULATOR_FILES=1 ARCHS="arm64 x86_64" epsilon.app
+      - uses: actions/upload-artifact@v3
+        with:
+          name: epsilon-macos.zip
+          path: output/debug/simulator/macos/
