@@ -6,7 +6,7 @@ APPLE_PLATFORM_MIN_VERSION = 10.10
 EPSILON_TELEMETRY ?= 0
 
 ifeq ($(DEBUG),1)
-ARCHS = $(shell uname -m)
+ARCHS ?= $(shell uname -m)
 else
 ARCHS = arm64 x86_64
 endif
