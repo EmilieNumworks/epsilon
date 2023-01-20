@@ -52,7 +52,7 @@ ion_src += $(addprefix ion/src/simulator/shared/, \
 ion_src += eadk/src/simulator.cpp
 SFLAGS += -DION_SIMULATOR_FILES=1
 # Export symbols so that dlopen-ing NWB files can use eadk_external_data and eadk_external_data_size
-LDFLAGS += -rdynamic
+LDFLAGS += $(LD_EXPORT_SYMBOLS_FLAG)
 else
 ion_src += ion/src/simulator/shared/dummy/window_position.cpp
 endif
